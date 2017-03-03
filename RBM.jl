@@ -104,10 +104,10 @@ using RBM
 #trainData=trainData[:,2:size(trainData)[2]]/255.0
 #trainData=trainData'
 
-#testData=readdlm("./mnist_test.csv",',',Float64)
-#testLab=testData[:,1]
-#testData=testData[:,2:size(testData)[2]]/255.0
-#testData=testData'
+testData=readdlm("./mnist_test.csv",',',Float64)
+testLab=testData[:,1]
+testData=testData[:,2:size(testData)[2]]/255.0
+testData=testData'
 
 hidSz=30
 mbatchsz=100
