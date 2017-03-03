@@ -8,27 +8,27 @@ function xp(x)
     return 1.0 ./ (1+exp(-x))
 end
 
-function vtohprob(rbmw::Matrix{Float64},vstate::Matrix{Int64})
+function vtohprob{T<:Real,P<:Integer}(rbmw::Matrix{T},vstate::Matrix{P})
     return xp(rbmw * vstate)
 end
 
-function htovprob(rbmw::Matrix{Float64},hstate::Matrix{Int64})
+function htovprob{T<:Real,P<:Integer}(rbmw::Matrix{T},hstate::Matrix{P})
     return xp(rbmw' * hstate)
 end
 
-function gradient{T}(vstate::Matrix{Int64},hstate::Matrix{T})
+function gradient{T<:Real,P<:Integer}(vstate::Matrix{P},hstate::Matrix{T})
     hstate * vstate'/size(vstate)[2]
 end
 
-function bernoulli{T}(v::Vector{T})
+function bernoulli{T<:Real}(v::Vector{T})
     return map((x)->x>rand()?1:0,v)
 end
 
-function bernoulli{T}(m::Matrix{T})
+function bernoulli{T<:Real}(m::Matrix{T})
     return map((x)->x>rand()?1:0,m)
 end
 
-function cd(rbmw::Matrix{Float64},data::Matrix{Float64})
+function cd{T<:Real}(rbmw::Matrix{T},data::Matrix{T})
     vdata=bernoulli(data)
     h0=bernoulli(vtohprob(rbmw,vdata))
     vh0=gradient(vdata,h0)
@@ -38,7 +38,7 @@ function cd(rbmw::Matrix{Float64},data::Matrix{Float64})
     return vh0-vh1
 end
 
-function showWeights(W::Matrix{Float64},row,col)
+function showWeights{T<:Real}(W::Matrix{T},row,col)
     r,c = size(W)
     plots = []
     for i in 1:r
@@ -56,7 +56,7 @@ function showWeights(W::Matrix{Float64},row,col)
     display(mgrid)
 end
 
-function dream(rbmw::Matrix{Float64},data::Matrix{Float64})
+function dream{T<:Real}(rbmw::Matrix{T},data::Matrix{T})
     vdata=bernoulli(data)
     h0=bernoulli(vtohprob(rbmw,vdata))
     v1=bernoulli(htovprob(rbmw,h0))
@@ -73,7 +73,7 @@ function dream(rbmw::Matrix{Float64},data::Matrix{Float64})
     return v1
 end
 
-function rbm(nhid::Int,data::Matrix{Float64},lr::Float64,niter::Int64,mbatchsz::Int64,mom::Float64)
+function rbm{T<:Real,P<:Integer}(nhid::P,data::Matrix{T},lr::T,niter::P,mbatchsz::P,mom::T)
     psz,nsz=size(data)
     momentum=mom
     if nsz % mbatchsz != 0
